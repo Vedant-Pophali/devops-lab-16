@@ -13,7 +13,7 @@ pipeline {
             steps {
                 // Compiles the Java code and creates the JAR file using Maven
                 // Note: If your Jenkins server is running locally on Windows, change 'sh' to 'bat'
-                sh 'mvn clean package -DskipTests'
+                bat 'mvn clean package -DskipTests'
             }
         }
         
@@ -21,7 +21,7 @@ pipeline {
             steps {
                 // Builds the Docker container using the Dockerfile we created
                 // Note: If your Jenkins server is running locally on Windows, change 'sh' to 'bat'
-                sh 'docker build -t my-java-app:latest .'
+                bat 'docker build -t my-java-app:latest .'
             }
         }
     }
