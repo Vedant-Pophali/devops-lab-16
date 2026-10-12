@@ -1,0 +1,21 @@
+# Stage 1: Build the application using Maven
+FROM maven:3.8.4-openjdk-11-slim AS build
+WORKDIR /app
+# Copy only the pom.xml first to cache dependencies
+COPY pom.xml .
+# Download dependencies (this step will be cached unless pom.xml changes)
+RUN mvn dependency:go-offline -B
+# Copy the source code
+COPY src ./src
+# Build the application, skipping tests for speed in this example
+RUN mvn package -DskipTests
+
+# Stage 2: Create the runtime image
+FROM openjdk:11-jre-slim
+WORKDIR /app
+# Copy the built JAR file from the build stage
+# Note: The exact name of the JAR depends on your pom.xml artifactId and version
+COPY --from=build /app/target/my-java-app-1.0-SNAPSHOT.jar app.jar
+# Specify the command to run the application
+# Note: You will need to update the main class path if you have one
+ENTRYPOINT ["java", "-jar", "app.jar"]
